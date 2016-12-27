@@ -1,13 +1,11 @@
-const {app, BrowserWindow, Tray} = require('electron');
+const {app, BrowserWindow, Menu, MenuItem} = require('electron');
 const path = require('path');
 const url = require('url');
 
-const Drawr = require(path.join(__dirname, 'drawr.asar/lib/drawr-core.js'))
-
 const appName = "drawr"
-// const appIcon = new Tray('')
 
 let win = null;
+let serverProc = null;
 
 function createWindow() {
   win = new BrowserWindow({
@@ -21,11 +19,35 @@ function createWindow() {
     slashes: true
   }));
 
-  win.webContents.openDevTools();
-
   win.on('closed', () => {
     win = null;
   });
+}
+
+function startServer(serverPort) {
+  const execFile = require('child_process').execFile;
+  serverProc = execFile(path.join(__dirname, 'drawr.asar/server/drawr-server'), [ '-p', serverPort ], (error, stdout, stderr) => {
+    if (error) {
+      throw error;
+    }
+
+    console.log(stdout);
+    console.log(stderr);
+  });
+
+  serverProc.on('close', (code, signal) => {
+    console.log(`server terminated due to ${signal}`);
+  })
+
+  console.log('drawr-server started.')
+}
+
+function stopServer() {
+  console.log('stopping drawr-server...', serverProc.pid);
+  if (serverProc.pid !== null) {
+    serverProc.kill('SIGHUP');
+  }
+  console.log('drawr-server stopped.')
 }
 
 // drawr is a single window application!
@@ -50,8 +72,53 @@ app.on('ready', () => {
     // app.dock.setMenu(menu)
   }
 
+  // startServer(3030);
   createWindow();
-  // startCanvas();
+
+  const menuTempl = [
+  {
+    label: 'View',
+    submenu: [
+      { role: 'reload' },
+      { role: 'toggledevtools' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
+    ]
+  },
+  {
+    label: 'Server', 
+    submenu: [
+      new MenuItem({
+        label: 'Start',
+        click() {
+          startServer(8080);
+        }
+      }),
+      new MenuItem({
+        label: 'Stop',
+        click() {
+          stopServer();
+        }
+      }),
+    ],
+  }]
+  if (process.platform === 'darwin' ) {
+    menuTempl.unshift({
+      label: app.getName(),
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        { role: 'services', submenu: [] },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideothers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    })
+  }
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTempl));
 });
 
 app.on('window-all-closed', () => {
@@ -65,3 +132,7 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+app.on('quit', () => {
+  // stopServer();
+})
