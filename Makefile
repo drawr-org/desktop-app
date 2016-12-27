@@ -5,13 +5,13 @@ DRAWR_GH=https://github.com/drawr-team
 all: pull run
 
 run:
-	npm run asar
+	if [[ ! -f drawr.asar ]]; then npm run asar; fi
 	npm start
 
 package:
 	npm run package
 
-pull: library patch-lib server
+pull: git-clean library patch-lib server
 
 library: clean
 	mkdir -p dist/lib--git
@@ -37,3 +37,6 @@ server: clean
 
 clean:
 	rm -rf dist/{server,lib,basic}
+
+git-clean:
+	rm -rf dist/*--git
