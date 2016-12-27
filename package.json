@@ -1,0 +1,33 @@
+{
+  "name": "drawr",
+  "version": "0.1.0",
+  "description": "The drawr desktop app",
+  "author": "The drawr-team",
+  "contributors": [
+    {
+      "name": "Robert Günzler",
+      "email": "robertguenzler@gmail.com"
+    }
+  ],
+  "scripts": {
+    "start": "electron .",
+    "prepackage": "make",
+    "package": "asar pack dist drawr.asar",
+    "postpackage": "electron-packager .",
+    "asar": "asar pack dist drawr.asar"
+  },
+  "main": "main.js",
+  "jshintConfig": {
+    "esversion": 6
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 6
+    }
+  },
+  "devDependencies": {
+    "asar": "^0.12.3",
+    "electron-packager": "^8.4.0",
+    "electron-prebuilt": "^1.4.1"
+  }
+}

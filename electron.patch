@@ -1,0 +1,27 @@
+*** dist/basic/index.html	2016-12-27 18:23:01.000000000 +0100
+--- ../core-lib/examples/basic/index.html	2016-12-19 12:43:03.000000000 +0100
+***************
+*** 3,13 ****
+    <head>
+      <title>Playing with canvas drawing</title>
+      <link rel="stylesheet" href="style.css" />
+!     <link rel="stylesheet" href="../lib/style.css" />
+    </head>
+    <body>
+      <div id="canvasDiv" class="fullscreen"></div>
+!     <script type="text/javascript" src="../lib/drawr-core.js"></script>
+      <script type="text/javascript" src="main.js"></script>
+    </body>
+  </html>
+--- 3,13 ----
+    <head>
+      <title>Playing with canvas drawing</title>
+      <link rel="stylesheet" href="style.css" />
+!     <link rel="stylesheet" href="../../dist/style.css" />
+    </head>
+    <body>
+      <div id="canvasDiv" class="fullscreen"></div>
+!     <script type="text/javascript" src="../../dist/drawr-core.js"></script>
+      <script type="text/javascript" src="main.js"></script>
+    </body>
+  </html>
