@@ -7,6 +7,7 @@ const appName = "drawr"
 let win = null;
 let serverProc = null;
 
+// open the application window and load the index.html from the ASAR
 function createWindow() {
   win = new BrowserWindow({
     width: 800,
@@ -24,6 +25,7 @@ function createWindow() {
   });
 }
 
+// spawn a async subprocess with the server
 function startServer(serverPort) {
   const execFile = require('child_process').execFile;
   serverProc = execFile(path.join(__dirname, 'drawr.asar/server/drawr-server'), [ '-p', serverPort ], (error, stdout, stderr) => {
@@ -35,13 +37,10 @@ function startServer(serverPort) {
     console.log(stderr);
   });
 
-  serverProc.on('close', (code, signal) => {
-    console.log(`server terminated due to ${signal}`);
-  })
-
   console.log('drawr-server started.')
 }
 
+// stop the server process by sending SIGHUP
 function stopServer() {
   console.log('stopping drawr-server...', serverProc.pid);
   if (serverProc.pid !== null) {
@@ -50,7 +49,7 @@ function stopServer() {
   console.log('drawr-server stopped.')
 }
 
-// drawr is a single window application!
+// drawr is a single window application
 const shouldQuit = app.makeSingleInstance((commandLint, workingDir) => {
   // someone tried to run a second instance, focus our window
   if (win) {
@@ -58,7 +57,6 @@ const shouldQuit = app.makeSingleInstance((commandLint, workingDir) => {
     win.focus();
   }
 });
-
 if (shouldQuit) {
   app.quit();
 }
@@ -67,12 +65,12 @@ if (shouldQuit) {
 app.on('ready', () => {
   app.setName(appName)
 
+  // do macOS specific stuff
   if (process.platform === 'darwin') {
     // app.dock.setIcon(appIcon)
     // app.dock.setMenu(menu)
   }
 
-  // startServer(3030);
   createWindow();
 
   const menuTempl = [
@@ -90,18 +88,15 @@ app.on('ready', () => {
     submenu: [
       new MenuItem({
         label: 'Start',
-        click() {
-          startServer(8080);
-        }
+        click() { startServer(8080) }
       }),
       new MenuItem({
         label: 'Stop',
-        click() {
-          stopServer();
-        }
+        click() { stopServer() }
       }),
     ],
   }]
+  // create the macOS specific menu layout
   if (process.platform === 'darwin' ) {
     menuTempl.unshift({
       label: app.getName(),
@@ -122,6 +117,7 @@ app.on('ready', () => {
 });
 
 app.on('window-all-closed', () => {
+  // we don't want that on macOS
   if (process.platform !== 'darwin') {
     app.quit();
   }
