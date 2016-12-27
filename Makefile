@@ -1,3 +1,8 @@
+ELECTRON_PKGR=node_modules/.bin/electron-packager
+CURL=curl
+
+GLIDE=glide
+
 DRAWR_GH=https://github.com/drawr-team
 
 .PHONY: pull run package
@@ -5,7 +10,6 @@ DRAWR_GH=https://github.com/drawr-team
 all: pull run
 
 run:
-	if [[ ! -f drawr.asar ]]; then npm run asar; fi
 	npm start
 
 package:
@@ -15,7 +19,7 @@ pull: git-clean library patch-lib server
 
 library: clean
 	mkdir -p dist/lib--git
-	curl -L $(DRAWR_GH)/core-lib/archive/master.tar.gz | tar -C dist/lib--git -xzU --strip-components=1
+	$(CURL) -L $(DRAWR_GH)/core-lib/archive/master.tar.gz | tar -C dist/lib--git -xzU --strip-components=1
 	cd dist/lib--git && npm install && npm run-script export
 	cp -r dist/lib--git/dist dist/lib
 	cp -r dist/lib--git/examples/basic dist/
@@ -28,8 +32,8 @@ patch-lib:
 
 server: clean
 	mkdir -p dist/server--git
-	curl -L $(DRAWR_GH)/core-server/archive/websocket.tar.gz | tar -C dist/server--git -xzU --strip-components=1
-	cd dist/server--git && glide install && go build -o dist/drawr-server
+	$(CURL) -L $(DRAWR_GH)/core-server/archive/websocket.tar.gz | tar -C dist/server--git -xzU --strip-components=1
+	cd dist/server--git && $(GLIDE) install && go build -o dist/drawr-server
 	cp -r dist/server--git/dist dist/server
 
 # clean-server:

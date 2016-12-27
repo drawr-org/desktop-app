@@ -15,7 +15,7 @@ function createWindow() {
   });
 
   win.loadURL(url.format({
-    pathname: path.join(__dirname, 'drawr.asar/basic/index.html'),
+    pathname: path.join(__dirname, 'dist/basic/index.html'),
     protocol: 'file',
     slashes: true
   }));
@@ -28,7 +28,7 @@ function createWindow() {
 // spawn a async subprocess with the server
 function startServer(serverPort) {
   const execFile = require('child_process').execFile;
-  serverProc = execFile(path.join(__dirname, 'drawr.asar/server/drawr-server'), [ '-p', serverPort ], (error, stdout, stderr) => {
+  serverProc = execFile(path.join(__dirname, 'dist/server/drawr-server'), [ '-p', serverPort ], (error, stdout, stderr) => {
     if (error) {
       throw error;
     }
