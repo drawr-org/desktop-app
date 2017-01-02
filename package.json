@@ -12,7 +12,7 @@
   "scripts": {
     "start": "electron .",
     "prepackage": "make",
-    "package": "electron-packager --overwrite .",
+    "package": "electron-packager --overwrite ."
   },
   "main": "main.js",
   "jshintConfig": {
